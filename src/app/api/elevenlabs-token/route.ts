@@ -24,22 +24,46 @@ The person you are speaking with is playing the role of: ${scenario.trainee_role
 Stay in character throughout. Be realistic and react naturally. Keep responses conversational and concise — this is a phone call, not an essay. Do not break character or reveal you are an AI.`
 
   const agentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!
-  const res = await fetch(
-    `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agentId}`,
+  const apiKey = process.env.ELEVENLABS_API_KEY!
+
+  // Update the agent's system prompt directly via API
+  const patchRes = await fetch(
+    `https://api.elevenlabs.io/v1/convai/agents/${agentId}`,
     {
-      method: 'GET',
+      method: 'PATCH',
       headers: {
-        'xi-api-key': process.env.ELEVENLABS_API_KEY!,
+        'xi-api-key': apiKey,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        conversation_config: {
+          agent: {
+            prompt: { prompt: systemPrompt },
+          },
+        },
+      }),
     }
   )
 
-  if (!res.ok) {
-    const text = await res.text()
+  if (!patchRes.ok) {
+    const text = await patchRes.text()
+    return NextResponse.json({ error: `ElevenLabs patch error: ${text}` }, { status: 500 })
+  }
+
+  // Now get a signed URL for the updated agent
+  const tokenRes = await fetch(
+    `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agentId}`,
+    {
+      method: 'GET',
+      headers: { 'xi-api-key': apiKey },
+    }
+  )
+
+  if (!tokenRes.ok) {
+    const text = await tokenRes.text()
     return NextResponse.json({ error: `ElevenLabs error: ${text}` }, { status: 500 })
   }
 
-  const { signed_url } = await res.json()
-  // Return both the signed URL and the system prompt so the client can pass overrides
-  return NextResponse.json({ signed_url, system_prompt: systemPrompt })
+  const { signed_url } = await tokenRes.json()
+  return NextResponse.json({ signed_url })
 }
