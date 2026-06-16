@@ -51,8 +51,8 @@ export default function SessionPage() {
         overrides: {
           agent: { prompt: { prompt: system_prompt } },
         },
-        onConnect: () => setStatus('active'),
-        onDisconnect: () => setStatus('ended'),
+        onConnect: () => { console.log('ElevenLabs connected'); setStatus('active') },
+        onDisconnect: (details?: unknown) => { console.log('ElevenLabs disconnected', details); setStatus('ended') },
         onMessage: (msg: { source: string; message: string }) => {
           const role = msg.source === 'ai' ? 'agent' : 'trainee'
           setTranscript(prev => [...prev, {
@@ -62,7 +62,7 @@ export default function SessionPage() {
           }])
         },
         onError: (err: unknown) => {
-          console.error('ElevenLabs error:', err)
+          console.error('ElevenLabs session error:', JSON.stringify(err))
         },
       })
 
