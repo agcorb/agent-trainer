@@ -37,7 +37,7 @@ export default function SessionPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId }),
       })
-      const { signed_url, error: tokenError } = await tokenRes.json()
+      const { signed_url, system_prompt, error: tokenError } = await tokenRes.json()
       if (tokenError || !signed_url) {
         console.error('Failed to get signed URL:', tokenError)
         setStatus('idle')
@@ -48,6 +48,9 @@ export default function SessionPage() {
 
       const conversation = await Conversation.startSession({
         signedUrl: signed_url,
+        overrides: {
+          agent: { prompt: { prompt: system_prompt } },
+        },
         onConnect: () => setStatus('active'),
         onDisconnect: () => setStatus('ended'),
         onMessage: (msg: { source: string; message: string }) => {

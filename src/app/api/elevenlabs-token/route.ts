@@ -23,22 +23,14 @@ The person you are speaking with is playing the role of: ${scenario.trainee_role
 
 Stay in character throughout. Be realistic and react naturally. Keep responses conversational and concise — this is a phone call, not an essay. Do not break character or reveal you are an AI.`
 
+  const agentId = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!
   const res = await fetch(
-    `https://api.elevenlabs.io/v1/convai/conversation/token`,
+    `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${agentId}`,
     {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'xi-api-key': process.env.ELEVENLABS_API_KEY!,
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        agent_id: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
-        overrides: {
-          agent: {
-            prompt: { prompt: systemPrompt },
-          },
-        },
-      }),
     }
   )
 
@@ -48,5 +40,6 @@ Stay in character throughout. Be realistic and react naturally. Keep responses c
   }
 
   const { signed_url } = await res.json()
-  return NextResponse.json({ signed_url })
+  // Return both the signed URL and the system prompt so the client can pass overrides
+  return NextResponse.json({ signed_url, system_prompt: systemPrompt })
 }
