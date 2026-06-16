@@ -30,29 +30,24 @@ export default function SessionPage() {
     if (!session) return
     setStatus('connecting')
 
-    // Build a dynamic system prompt from the scenario
-    const scenario = session.scenario!
-    const systemPrompt = `You are playing the role of: ${scenario.agent_role}.
-
-Context: ${scenario.context}
-
-The person you are speaking with is playing the role of: ${scenario.trainee_role}.
-
-Stay in character. Be realistic. React naturally to what the trainee says. Do not break character or reveal you are an AI unless directly asked. Keep responses conversational and appropriately brief.`
-
     try {
-      // ElevenLabs Conversational AI SDK (browser)
+      // Get signed URL from server (required for overrides)
+      const tokenRes = await fetch('/api/elevenlabs-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId }),
+      })
+      const { signed_url, error: tokenError } = await tokenRes.json()
+      if (tokenError || !signed_url) {
+        console.error('Failed to get signed URL:', tokenError)
+        setStatus('idle')
+        return
+      }
+
       const { Conversation } = await import('@elevenlabs/client')
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-
       const conversation = await Conversation.startSession({
-        agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
-        overrides: {
-          agent: {
-            prompt: { prompt: systemPrompt },
-          },
-        },
+        signedUrl: signed_url,
         onConnect: () => setStatus('active'),
         onDisconnect: () => setStatus('ended'),
         onMessage: (msg: { source: string; message: string }) => {
@@ -65,12 +60,9 @@ Stay in character. Be realistic. React naturally to what the trainee says. Do no
         },
         onError: (err: unknown) => {
           console.error('ElevenLabs error:', err)
-          setStatus('ended')
         },
       })
 
-      // Store stream and conversation for cleanup
-      ;(conversation as unknown as { _stream: MediaStream })._stream = stream
       conversationRef.current = conversation
     } catch (err) {
       console.error('Failed to start call:', err)
@@ -80,9 +72,8 @@ Stay in character. Be realistic. React naturally to what the trainee says. Do no
 
   const endCall = async () => {
     if (conversationRef.current) {
-      const conv = conversationRef.current as { endSession?: () => Promise<void>; _stream?: MediaStream }
+      const conv = conversationRef.current as { endSession?: () => Promise<void> }
       await conv.endSession?.()
-      conv._stream?.getTracks().forEach(t => t.stop())
       conversationRef.current = null
     }
     setStatus('ended')

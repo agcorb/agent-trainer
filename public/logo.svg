@@ -39,14 +39,14 @@
 
     <!-- TYPOGRAPHY GROUP -->
     <g transform="translate(180, 105)">
-      <!-- "AGENT" - Bold, Professional Slate -->
-      <text font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="52" fill="#0F172A" letter-spacing="1">AGENT</text>
-      
-      <!-- "TRAINER" - Energetic, Fun Urban Blue (Positioned right after AGENT) -->
+      <!-- "AGENT" - White for dark nav background -->
+      <text font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="52" fill="#FFFFFF" letter-spacing="1">AGENT</text>
+
+      <!-- "TRAINER" - Energetic Urban Blue -->
       <text x="195" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="400" font-size="52" fill="url(#urbanAccent)" letter-spacing="1">TRAINER</text>
-      
+
       <!-- Subtitle/Tagline -->
-      <text y="32" x="2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="14" fill="#64748B" letter-spacing="4">SALES &amp; SERVICE ACADEMY</text>
+      <text y="32" x="2" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="14" fill="#94A3B8" letter-spacing="4">SALES &amp; SERVICE ACADEMY</text>
     </g>
   </g>
 </svg>

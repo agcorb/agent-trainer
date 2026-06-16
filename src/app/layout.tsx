@@ -19,9 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={geist.className} style={{ background: "var(--bg-primary)", minHeight: "100vh" }}>
-        <nav style={{ background: "var(--text-primary)", borderBottom: "1px solid #1e293b" }} className="px-6 py-3 flex items-center gap-8">
+        <nav style={{ background: "var(--text-primary)", borderBottom: "1px solid #1e293b" }} className="px-6 py-2 flex items-center gap-8">
           <Link href="/">
-            <Image src="/logo.svg" alt="Agent Trainer" width={220} height={66} priority />
+            <Image src="/logo.svg" alt="Agent Trainer" width={340} height={102} priority />
           </Link>
           <div className="flex gap-6 ml-4">
             <Link href="/train" style={{ color: "var(--accent-blue)" }} className="text-sm font-semibold hover:opacity-80 transition-opacity">

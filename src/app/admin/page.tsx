@@ -39,22 +39,32 @@ export default function AdminPage() {
       <div className="grid gap-4">
         {scenarios.map(s => (
           <div key={s.id} className="rounded-xl p-5" style={{ background: "var(--bg-surface)", border: "1px solid var(--border)" }}>
-            <div className="flex items-start justify-between">
-              <div>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
                 <h2 className="font-semibold" style={{ color: "var(--text-primary)" }}>{s.title}</h2>
                 <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>{s.description}</p>
                 <div className="flex gap-3 mt-2 text-xs" style={{ color: "var(--text-muted)" }}>
                   <span>{s.rubric?.length ?? 0} criteria</span>
                   <span>Pass: {s.pass_threshold}%</span>
+                  <span style={{ color: "var(--accent-warm)" }}>{s.trainee_role}</span>
                 </div>
               </div>
-              <Link
-                href={`/train?scenario=${s.id}`}
-                className="text-sm font-medium whitespace-nowrap ml-4 hover:opacity-80"
-                style={{ color: "var(--accent-blue)" }}
-              >
-                Start session →
-              </Link>
+              <div className="flex flex-col gap-2 items-end shrink-0">
+                <Link
+                  href={`/train?scenario=${s.id}`}
+                  className="text-sm font-semibold whitespace-nowrap hover:opacity-80 px-3 py-1.5 rounded-lg text-white"
+                  style={{ background: "linear-gradient(135deg, #0EA5E9, #2563EB)" }}
+                >
+                  Start Session
+                </Link>
+                <Link
+                  href={`/admin/scenarios/${s.id}`}
+                  className="text-xs whitespace-nowrap hover:opacity-70"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  View / Edit →
+                </Link>
+              </div>
             </div>
           </div>
         ))}
