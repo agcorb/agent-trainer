@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -17,12 +18,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geist.className} bg-gray-50 min-h-screen`}>
-        <nav className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-6">
-          <span className="font-semibold text-gray-900">Agent Trainer</span>
-          <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">Home</Link>
-          <Link href="/admin" className="text-sm text-gray-600 hover:text-gray-900">Admin</Link>
-          <Link href="/train" className="text-sm text-gray-600 hover:text-gray-900">Train</Link>
+      <body className={geist.className} style={{ background: "var(--bg-primary)", minHeight: "100vh" }}>
+        <nav style={{ background: "var(--text-primary)", borderBottom: "1px solid #1e293b" }} className="px-6 py-3 flex items-center gap-8">
+          <Link href="/">
+            <Image src="/logo.svg" alt="Agent Trainer" width={220} height={66} priority />
+          </Link>
+          <div className="flex gap-6 ml-4">
+            <Link href="/train" style={{ color: "var(--accent-blue)" }} className="text-sm font-semibold hover:opacity-80 transition-opacity">
+              Train
+            </Link>
+            <Link href="/admin" style={{ color: "#E9E6E7" }} className="text-sm font-medium hover:opacity-80 transition-opacity">
+              Admin
+            </Link>
+          </div>
         </nav>
         <main className="max-w-5xl mx-auto px-6 py-8">
           {children}
